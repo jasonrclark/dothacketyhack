@@ -45,19 +45,34 @@ class Room
     @stack.height = 0
   end
 
+  MOVES = {
+    :up    => [-10, nil],
+    :down  => [10, nil],
+    :left  => [nil, -10],
+    :right => [nil, 10],
+
+    :shift_up    => [-20, nil],
+    :shift_down  => [20, nil],
+    :shift_left  => [nil, -20],
+    :shift_right => [nil, 20],
+  }
   def keypress(key)
-    case key
-    when :up
-      princess.top -= 10
-    when :down
-      princess.top += 10
-    when :right
-      princess.left += 10
-    when :left
-      princess.left -= 10
+    move = MOVES[key]
+    
+    if move != nil
+      princess.top  += move[0] unless move[0].nil?
+      princess.left += move[1] unless move[1].nil?
     else
-     alert "wat? #{key.inspect}"
+     alert "wat? #{key.inspect}"    
     end
+  end
+  
+  def highlight_princess
+    @princess.path = @princess.path.gsub("princess.jpg", "princess.highlight.jpg")
+  end
+
+  def unhighlight_princess
+    @princess.path = @princess.path.gsub("princess.highlight.jpg", "princess.jpg")
   end
 
   def method_missing(meth, *args, &block)
@@ -76,11 +91,17 @@ class Outside < Room
   end
   
   def keypress(key)
-    if key == " " && princess_in_the_doorway
-      Room.show("inside")
+    if princess_in_the_doorway
+      highlight_princess
+      if key == " "
+        Room.show("inside")
+        return
+      end
     else
-      super(key)
-    end    
+      unhighlight_princess
+    end
+
+    super(key)   
   end
     
   def princess_in_the_doorway
