@@ -51,10 +51,10 @@ class Room
     :left  => [nil, -10],
     :right => [nil, 10],
 
-    :shift_up    => [-20, nil],
-    :shift_down  => [20, nil],
-    :shift_left  => [nil, -20],
-    :shift_right => [nil, 20],
+    :shift_up    => [-40, nil],
+    :shift_down  => [40, nil],
+    :shift_left  => [nil, -40],
+    :shift_right => [nil, 40],
   }
   def keypress(key)
     move = MOVES[key]
@@ -62,9 +62,18 @@ class Room
     if move != nil
       princess.top  += move[0] unless move[0].nil?
       princess.left += move[1] unless move[1].nil?
+    elsif key == " " && can_act?
+      act!
     else
-     alert "wat? #{key.inspect}"    
+      alert "wat? #{key.inspect}"    
     end
+    
+    if can_act?
+      highlight_princess
+    else
+      unhighlight_princess
+    end
+
   end
   
   def highlight_princess
@@ -73,6 +82,10 @@ class Room
 
   def unhighlight_princess
     @princess.path = @princess.path.gsub("princess.highlight.jpg", "princess.jpg")
+  end  
+  
+  def can_act?
+    false
   end
 
   def method_missing(meth, *args, &block)
@@ -83,30 +96,21 @@ end
 class Outside < Room  
   def setup_room
     @name = "outside"
+    @app.background lightgreen
     @castle = image :left => 0, :top => self.height - 400, :height => 400, :width => self.width
     @castle.path = File.expand_path("~/.hacketyhack/princess/castle.jpg")
 
     @princess = image :left => 0, :top => 0, :width => 100
-    @princess.path = File.expand_path("~/.hacketyhack/princess/princess.jpg")
+    @princess.path = File.expand_path("~/.hacketyhack/princess/princess.jpg")    
   end
-  
-  def keypress(key)
-    if princess_in_the_doorway
-      highlight_princess
-      if key == " "
-        Room.show("inside")
-        return
-      end
-    else
-      unhighlight_princess
-    end
-
-    super(key)   
-  end
-    
-  def princess_in_the_doorway
+   
+  def can_act?
     princess.left >= 610 && princess.left < 610 + princess.width &&
       princess.top >= 520 && princess.top < princess.top + princess.height
+  end
+  
+  def act!
+    Room.show("inside")
   end
 end
 
@@ -122,12 +126,27 @@ class Inside < Room
     rect :fill => brown, :left => 0, :top => 670, :width => @app.width
   end
   
-  def keypress(key)
-    case key
-    when " "
+  def can_act?
+    attack_dog? || in_door?
+  end
+
+  def attack_dog?
+    (princess.left + princess.width) >= @dog.left && !@dog.hidden
+  end
+  
+  def in_door?
+    @door != nil && princess.left + princess.width > @door.left
+  end
+  
+  def act!
+    if attack_dog?
+      @dog.path = @dog.path.gsub("dog.jpg", "dog.dead.jpg")
+      timer 1 do
+        @dog.hide
+        @door = rect(:fill => blue, :left => @app.width - 150, :top => 420, :width => 100, :height => 250)
+      end
+    elsif in_door?
       Room.show("outside")
-    else
-      super(key)
     end
   end
 end
