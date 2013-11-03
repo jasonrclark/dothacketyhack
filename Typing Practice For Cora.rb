@@ -6,7 +6,8 @@ WORDS = [
   "josie",
   "cat",
   "dog",
-  "FLOWER"
+  "FLOWER",
+  "brusier"
   ].map do |word|
   [word.downcase, word.upcase, word.capitalize]
 end.flatten
