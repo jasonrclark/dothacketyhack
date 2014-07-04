@@ -1,6 +1,6 @@
 require './shapes'
 
-Shoes.app do
+Shoes.app width:800 do
   background white
   
   # Darth Vader
@@ -46,12 +46,19 @@ Shoes.app do
   oval 400, 330, 20, 20, fill:limegreen, stroke:limegreen
   
   rect 310, 400, 20, 20, fill:limegreen, stroke:limegreen
-  rect 370, 400, 20, 20, fill:limegreen, stroke:limegreen
+  rect 370, 400, 20, 20, fill:limegreen, stroke:limegreen  
   
+  # Leia
+  oval 550, 100, 70, 80, fill:antiquewhite
+  oval 530, 120, 30, 40, fill:saddlebrown
+  oval 610, 120, 30, 40, fill:chocolate
+  
+  oval 570, 130, 6, 3, fill:blue, stroke:blue
+  oval 590, 130, 6, 3, fill:blue, stroke:blue
+  para "^", left: 575, top: 135
+    
   keypress do |key|
     case key
-    when " "
-      alert @ears.first.top
     when "d"
       move_saber(10)
     when "D"
@@ -64,22 +71,26 @@ Shoes.app do
   end
   
   def move_saber(value)
-    return if (@saber1.left <= 30 && value < 0) || (@saber1.left > 180 && value > 0)
+    a = animate do
+      a.stop if (@saber1.left <= 30 && value < 0) || (@saber1.left > 180 && value > 0)
     
-    @saber1.left  += value
-    @saber1.right += value
+      @saber1.left  += value
+      @saber1.right += value
       
-    @saber2.left  += value
-    @saber2.right += value
+      @saber2.left  += value
+      @saber2.right += value
     
-    @fist.left += value
+      @fist.left += value
+    end
   end
   
-  def move_ears(value)  
-    return if (@ears.first.top > 220 && value > 0) || (@ears.first.top <= 150 && value < 0)
+  def move_ears(value)
+    a = animate do
+      a.stop if (@ears.first.top > 220 && value > 0) || (@ears.first.top <= 150 && value < 0)
     
-    @ears.each do |ear|
-      ear.top += value
+      @ears.each do |ear|
+        ear.top += value
+      end
     end
   end
 end
