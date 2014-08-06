@@ -3,6 +3,10 @@ require './shapes'
 Shoes.app width:800 do
   background white
   
+  click do |_, *pt|
+    alert pt.to_s
+  end
+
   # Darth Vader
   arc 100, 100, 100, 100, Shoes::PI, 0
   oval 104, 80, 10, 6, fill:aliceblue
@@ -57,6 +61,18 @@ Shoes.app width:800 do
   oval 590, 130, 6, 3, fill:blue, stroke:blue
   para "^", left: 575, top: 135
     
+  line 562, 170, 540, 400
+  line 602, 171, 658, 392
+  line 540, 400, 658, 392
+  
+  line 494, 232, 561, 184
+  line 494, 232, 555, 235
+  oval 484, 230, 20, 20, fill:peachpuff
+  
+  line 605, 182, 691, 218
+  line 620, 235, 690, 226
+  oval 688, 212, 20, 20, fill:bisque
+  
   keypress do |key|
     case key
     when "d"
