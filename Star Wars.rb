@@ -2,7 +2,7 @@ require './shapes'
 
 Shoes.app width:800 do
   background white
-  
+
   click do |_, *pt|
     alert pt.to_s
   end
@@ -19,60 +19,66 @@ Shoes.app width:800 do
   rect 25, 120, 150, 250
   line 45, 120, 35, 400, stroke:white
   line 145, 120, 160, 400, stroke:white
-  
+
   rect 45, 370, 30, 40
   rect 125, 370, 30, 40
   @saber1 = line 60, 220, 60, 100, displace_left: 0, strokewidth: 10, stroke:darkred, cap: :curve
   @saber2 = line 60, 220, 60, 102, displace_left: 0, strokewidth: 5, stroke:red, cap: :curve
   @fist  = oval 40, 220, 35, 30, fill:darkgray
-  
+
   # Yoda
   @ears = []
   @ears << line(260, 150, 320, 235, strokewidth:10, stroke:red)
   @ears << line(260, 150, 320, 220, strokewidth:10, stroke:limegreen, cap: :curve)
   @ears << line(260, 150, 320, 250, strokewidth:10, stroke:limegreen, cap: :curve)
-  
+
   @ears << line(440, 150, 380, 235, strokewidth:10, stroke:red)
   @ears << line(440, 150, 380, 220, strokewidth:10, stroke:limegreen, cap: :curve)
   @ears << line(440, 150, 380, 250, strokewidth:10, stroke:limegreen, cap: :curve)
-  
+
   oval 300, 200, 100, 100, fill:limegreen, stroke:limegreen
   oval 320, 250, 10, 10
   oval 380, 250, 10, 10
   line 340, 220, 360, 220, stroke:aliceblue
   line 335, 230, 365, 230, stroke:aliceblue
   line 330, 240, 370, 240, stroke:aliceblue
-  
+
   rect 300, 300, 100, 100, fill:brown, stroke:brown
   rect 340, 300, 20, 30,   fill:black
-  
+
   oval 290, 330, 20, 20, fill:limegreen, stroke:limegreen
   oval 400, 330, 20, 20, fill:limegreen, stroke:limegreen
-  
+
   rect 310, 400, 20, 20, fill:limegreen, stroke:limegreen
-  rect 370, 400, 20, 20, fill:limegreen, stroke:limegreen  
-  
+  rect 370, 400, 20, 20, fill:limegreen, stroke:limegreen
+
   # Leia
   oval 550, 100, 70, 80, fill:antiquewhite
   oval 530, 120, 30, 40, fill:saddlebrown
   oval 610, 120, 30, 40, fill:chocolate
-  
+
   oval 570, 130, 6, 3, fill:blue, stroke:blue
   oval 590, 130, 6, 3, fill:blue, stroke:blue
   para "^", left: 575, top: 135
-    
+
   line 562, 170, 540, 400
-  line 602, 171, 658, 392
-  line 540, 400, 658, 392
-  
+  line 602, 171, 658, 400
+  line 540, 400, 658, 400
+
+  @leah_saber1 = line 495, 235, 495, 235, displace_left: 0, strokewidth: 10, stroke:darkred, cap: :curve
+  @leah_saber2 = line 495, 245, 495, 245, displace_left: 0, strokewidth: 5, stroke:red, cap: :curve
+
   line 494, 232, 561, 184
   line 494, 232, 555, 235
   oval 484, 230, 20, 20, fill:peachpuff
-  
+
   line 605, 182, 691, 218
   line 620, 235, 690, 226
   oval 688, 212, 20, 20, fill:bisque
-  
+
+  rect 560, 400, 20, 30
+  rect 620, 400, 20, 30
+
   keypress do |key|
     case key
     when "d"
@@ -83,29 +89,58 @@ Shoes.app width:800 do
       move_ears(10)
     when "Y"
       move_ears(-10)
+    when "l"
+      move_leah_saber(20)
+    when "L"
+      move_leah_saber(-20)
     end
   end
-  
+
   def move_saber(value)
-    a = animate do
-      a.stop if (@saber1.left <= 30 && value < 0) || (@saber1.left > 180 && value > 0)
-    
-      @saber1.left  += value
-      @saber1.right += value
-      
-      @saber2.left  += value
-      @saber2.right += value
-    
-      @fist.left += value
+    return if @animate_saber
+
+    @animate_saber = animate do
+      if (@saber1.left <= 30 && value < 0) || (@saber1.left > 180 && value > 0)
+        @animate_saber.stop
+        @animate_saber = nil
+      else
+        @saber1.left  += value
+        @saber1.right += value
+
+        @saber2.left  += value
+        @saber2.right += value
+
+        @fist.left += value
+      end
     end
   end
-  
+
   def move_ears(value)
-    a = animate do
-      a.stop if (@ears.first.top > 220 && value > 0) || (@ears.first.top <= 150 && value < 0)
-    
-      @ears.each do |ear|
-        ear.top += value
+    return if @animate_ears
+    @animate_ears = animate do
+      if (@ears.first.top > 220 && value > 0) || (@ears.first.top <= 150 && value < 0)
+        @animate_ears.stop
+        @animate_ears = nil
+      else
+        @ears.each do |ear|
+          ear.top += value
+        end
+      end
+    end
+  end
+
+  def move_leah_saber(value)
+    return if @animate_leah
+    @animate_leah = animate do
+      if (@leah_saber1.height > 150 && value > 0) || (@leah_saber1.height < 1 && value < 0)
+        @animate_leah.stop
+        @animate_leah = nil
+      else
+        @leah_saber1.top -= value
+        @leah_saber1.height += value
+
+        @leah_saber2.top -= value
+        @leah_saber2.height += value
       end
     end
   end
