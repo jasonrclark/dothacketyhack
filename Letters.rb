@@ -1,4 +1,5 @@
-LETTERS = ('a'..'z').to_a + ('A'..'Z').to_a
+WAIT = 5
+LETTERS = ('a'..'z').to_a #+ ('A'..'Z').to_a
 
 Shoes.app(height: 180, width: 150) do
   @background = background white
@@ -12,7 +13,7 @@ Shoes.app(height: 180, width: 150) do
     end
   end
   
-  every(10) do
+  every(WAIT) do
     oops if @letter.stroke != green
     
     @letter.stroke = black
