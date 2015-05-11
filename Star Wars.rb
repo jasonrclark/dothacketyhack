@@ -65,8 +65,8 @@ Shoes.app width:800 do
   line 602, 171, 658, 400
   line 540, 400, 658, 400
 
-  @leah_saber1 = line 495, 235, 495, 235, displace_left: 0, strokewidth: 10, stroke:darkred, cap: :curve
-  @leah_saber2 = line 495, 245, 495, 245, displace_left: 0, strokewidth: 5, stroke:red, cap: :curve
+  @leah_saber1 = line 495, 235, 495, 235, displace_left: 0, strokewidth: 10, stroke:fuchsia, cap: :curve
+  @leah_saber2 = line 495, 245, 495, 245, displace_left: 0, strokewidth: 5, stroke:darkmagenta, cap: :curve
 
   line 494, 232, 561, 184
   line 494, 232, 555, 235
